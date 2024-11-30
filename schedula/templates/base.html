@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ titulo }}</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+</head>
+<style>
+    body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+    main {
+        flex: 1;
+    }
+    
+    /* Estilo para os botões não selecionados */
+.btn-check:checked + .btn-outline-primary {
+    background-color: #b552d5;
+    color: white;
+    border-color: #6b2c9c;
+}
+
+/* Estilo para os botões não selecionados */
+.btn-check:not(:checked) + .btn-outline-primary {
+    background-color: white;
+    color: #080808;
+    border-color: #030303;
+}
+
+
+</style>
+<body>
+    <!-- Navbar -->
+    {% include "includes/navbar.html" with context %}
+    {% include "toast.html" with context %}
+    <main>
+        {% block conteudo %}
+        {% endblock %}
+    </main>
+    <footer class="bg-light text-center text-lg-start">
+        <div class="container p-4">
+            <!-- Seção sobre -->
+            <div class="row">
+                <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
+                    <h5 class="text-uppercase">Sobre Nós</h5>
+                    <p>
+                        Somos uma empresa dedicada a oferecer as melhores soluções. Nossa missão é ajudar você a alcançar seus objetivos com eficiência.
+                    </p>
+                </div>
+                <!-- Links úteis -->
+                <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
+                    <h5 class="text-uppercase">Links Úteis</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="/" class="text-dark">Início</a></li>
+                        <li><a href="/contato" class="text-dark">Contato</a></li>
+                        <li><a href="/sobre" class="text-dark">Sobre</a></li>
+                    </ul>
+                </div>
+                <!-- Redes sociais -->
+                <div class="col-lg-4 col-md-12 mb-4 mb-md-0">
+                    <h5 class="text-uppercase">Siga-nos</h5>
+                    <div>
+                        <a href="#" class="btn btn-outline-dark btn-floating m-1" role="button">
+                            <i class="bi bi-facebook"></i> <!-- Substituir por ícones reais -->
+                        </a>
+                        <a href="#" class="btn btn-outline-dark btn-floating m-1" role="button">
+                            <i class="bi bi-twitter-x"></i>
+                        </a>
+                        <a href="#" class="btn btn-outline-dark btn-floating m-1" role="button">
+                            <i class="bi bi-instagram"></i>
+                        </a>
+                        <a href="#" class="btn btn-outline-dark btn-floating m-1" role="button">
+                            <i class="bi bi-linkedin"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Copyright -->
+        <div class="text-center p-3 bg-dark text-white">
+            © 2024 Schedula. Todos os direitos reservados.
+        </div>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const toastElement = document.getElementById('topRightToast');
+            const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastElement);
+    
+            // Exibe o toast automaticamente ao carregar a página
+            toastBootstrap.show();
+        });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+</body>
+</html>

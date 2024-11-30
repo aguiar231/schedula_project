@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block conteudo %}
+<section class="container py-5">
+    <div class="row align-items-center">
+        <!-- Imagem -->
+        <div class="col-lg-6 mb-4 mb-lg-0">
+            <img src="/static/img/boas_vindas.svg" wi alt="Imagem de agendamento" class="img-fluid">
+        </div>
+        
+        <!-- Texto -->
+        <div class="col-lg-6">
+            <h1 class="display-4">Bem-vindo ao <b style="color: #b552d5;">Schedula</b> </h1>
+            <p class="lead">
+                Este é o software oficial de agendamento de salas de aula da nossa instituição. Com ele, você pode gerenciar e reservar salas de forma rápida, prática e eficiente, garantindo um ambiente organizado para todos.
+            </p>
+            <p>
+                Acesse agora para explorar todas as funcionalidades e aproveitar uma experiência simplificada no gerenciamento de salas.
+            </p>
+            <!-- Centralizando o botão -->
+            <div class="text-center">
+                <a href="/login" class="btn btn-primary d-inline-block btn-lg rounded-0 px-5" style="background-color: #b552d5; border-color: #b552d5;">Login</a>
+                <a href="/registrar" class="btn btn-primary d-inline-block btn-lg rounded-0 mx-4 my-1" style="color:black; background-color: #ffffff; border-color: #b552d5;">Registrar</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

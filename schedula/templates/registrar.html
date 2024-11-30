@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block conteudo %}
+<section class="container py-5">
+    <div class="row align-items-center">
+        <!-- Imagem à Esquerda -->
+        <div class="col-lg-6 mb-4 mb-lg-0">
+            <img src="/static/img/registrar.svg" alt="Imagem de Registro" class="img-fluid">
+        </div>
+        
+        <!-- Formulário de Registro à Direita -->
+        <div class="col-lg-6">
+            <h2 class="display-4 mb-4">Crie sua Conta</h2>
+            <p class="lead mb-4">
+                Crie sua conta para começar a usar nosso sistema de agendamento de salas de aula. Preencha as informações abaixo para criar sua conta.
+            </p>
+            
+            <form action="/registrar" method="POST">
+                <div class="mb-3">
+                    <label for="nome" class="form-label">Nome</label>
+                    <input type="text" class="form-control" id="nome" name="nome" required>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">E-mail</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="senha" class="form-label">Senha</label>
+                    <input type="password" class="form-control" id="senha" name="senha" required>
+                </div>
+                <div class="mb-3">
+                    <label for="conf_senha" class="form-label">Confirmar Senha</label>
+                    <input type="password" class="form-control" id="confirmar_senha" name="conf_senha" required>
+                </div>
+                
+                <!-- Botão Criar Conta -->
+                <button type="submit" class="btn btn-primary rounded-0 w-100" style="background-color: #b552d5; border-color: #b552d5;">Criar Conta</button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

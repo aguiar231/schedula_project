@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block conteudo %}
+
+<section class="container my-4">
+    <!-- Filtro -->
+    <form class="row mb-4 g-3 align-items-end" method="GET" action="/sala/reserva/">
+        <div class="col-md-4">
+            <label for="filter_data" class="form-label">Data da Reserva</label>
+            <input type="date" class="form-control" id="filter_data" name="filter_data_reserva" value="{{ request.query_params.get('filter_data_reserva', '') }}">
+        </div>
+        <div class="col-md-4">
+            <label for="filter_status" class="form-label">Status</label>
+            <select class="form-select" id="filter_status" name="filter_status">
+                <option value="" {% if not request.query_params.get('filter_status') %}selected{% endif %}>Selecione o status</option>
+                <option value="CONFIRMADA" {% if request.query_params.get('filter_status') == "CONFIRMADA" %}selected{% endif %}>Confirmada</option>
+                <option value="PENDENTE" {% if request.query_params.get('filter_status') == "PENDENTE" %}selected{% endif %}>Pendente</option>
+                <option value="CANCELADA" {% if request.query_params.get('filter_status') == "CANCELADA" %}selected{% endif %}>Cancelada</option>
+            </select>
+        </div>
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+        </div>
+    </form>
+
+    <!-- Listagem de Reservas -->
+    <div class="row g-4">
+        {% for dado in dados %}
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        Sala: {{ dado.sala.nome }}
+                    </h5>
+                    <p class="card-text">
+                        <strong>Data:</strong> {{ dado.reserva.data_reserva }}<br>
+                        <strong>Horário:</strong> {{ dado.reserva.horario_inicio }} - {{ dado.reserva.horario_fim }}<br>
+                        <strong>Status:</strong> 
+                        {% if dado.reserva.status == "CONFIRMADA" %}
+                            <span class="badge bg-success">Confirmada</span>
+                        {% elif dado.reserva.status == "PENDENTE" %}
+                            <span class="badge bg-warning text-dark">Pendente</span>
+                        {% elif dado.reserva.status == "CANCELADA" %}
+                            <span class="badge bg-danger">Cancelada</span>
+                        {% endif %}
+                    </p>
+                    <div class="d-flex gap-2">
+                    {% if dado.reserva.status == "PENDENTE" or dado.reserva.status == "CONFIRMADA" %}
+                        <form method="POST" action="/sala/reserva/{{ dado.reserva.id }}/cancelar" class="d-inline">
+                            <button type="submit" class="btn btn-outline-danger">
+                                <i class="bi bi-x-circle-fill"></i> Cancelar
+                            </button>
+                        </form>
+                    {% endif %}
+                    {% if dado.reserva.status == "PENDENTE" %}
+                        <form method="POST" action="/sala/reserva/{{ dado.reserva.id }}/confirmar" class="d-inline">
+                            <button type="submit" class="btn btn-outline-success">
+                                <i class="bi bi-check2"></i> Confirmar
+                            </button>
+                        </form>
+                    {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Paginação -->
+    <nav class="my-4" aria-label="Paginação">
+        <ul class="pagination justify-content-center">
+            {% for i in range(1, total_paginas + 1) %}
+            <li class="page-item {% if i == pagina_atual %}active{% endif %}">
+                <a class="page-link" href="?pagina={{ i }}{% if request.query_params.get('filter_data_reserva') %}&filter_data_reserva={{ request.query_params.get('filter_data_reserva') }}{% endif %}{% if request.query_params.get('filter_status') %}&filter_status={{ request.query_params.get('filter_status') }}{% endif %}">
+                    {{ i }}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </nav>
+    
+</section>
+
+{% endblock %}

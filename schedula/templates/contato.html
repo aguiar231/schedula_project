@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block conteudo %}
+<section class="container py-5">
+    <div class="row align-items-center">
+        <!-- Texto explicativo (esquerda) -->
+        <div class="col-lg-6 order-lg-first mb-4 mb-lg-0">
+            <h2 class="display-4">Como podemos ajudar?</h2>
+        </div>
+        
+        <!-- Formulário de Contato (direita) -->
+        <div class="col-lg-6">
+            <h2 class="display-4">Entre em Contato</h2>
+            <p class="lead">
+                Se você tem dúvidas, sugestões ou problemas técnicos, entre em contato conosco! Também estamos abertos a parcerias.
+            </p>
+            <!-- Formulário -->
+            <form action="" method="POST">
+                <div class="mb-3">
+                    <label for="nome" class="form-label">Nome</label>
+                    <input type="text" class="form-control" id="nome" name="nome" required>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">E-mail</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="telefone" class="form-label">Telefone</label>
+                    <input type="tel" class="form-control" id="telefone" name="telefone" required>
+                </div>
+                <div class="mb-3">
+                    <label for="mensagem" class="form-label">Mensagem</label>
+                    <textarea class="form-control" id="mensagem" name="mensagem" rows="4" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary rounded-0" style="background-color: #b552d5; border-color: #b552d5;">Enviar</button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

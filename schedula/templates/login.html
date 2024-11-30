@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block conteudo %}
+<section class="container py-5">
+    <div class="row align-items-center">
+        <!-- Imagem à Esquerda -->
+        <div class="col-lg-6 mb-4 mb-lg-0">
+            <img src="/static/img/login.svg" alt="Imagem de Login" class="img-fluid">
+        </div>
+        
+        <!-- Formulário de Login à Direita -->
+        <div class="col-lg-6">
+            <h2 class="display-4 mb-4">Efetue o Login para Acessar</h2>
+            <p class="lead mb-4">
+                Faça o login para ter acesso ao sistema de agendamento de salas de aula. 
+                Insira seu e-mail e senha abaixo para continuar.
+            </p>
+            
+            <form action="/login" method="post">
+                <div class="mb-3">
+                    <label for="email" class="form-label">E-mail</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="senha" class="form-label">Senha</label>
+                    <input type="password" class="form-control" id="senha" name="senha" required>
+                </div>
+                 <!-- Link para Registro -->
+                 <div class="mb-3 text-center">
+                    <a href="/registrar" class="text-decoration-none">Não tem uma conta? Registre-se aqui</a>
+                </div>
+                <button type="#" id="showStyledToast" class="btn btn-primary rounded-0 w-100" style="background-color: #b552d5; border-color: #b552d5;">Entrar</button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

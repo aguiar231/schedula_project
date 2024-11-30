@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "schedula"
+version = "0.1.0"
+description = ""
+authors = [""]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = {extras = ["standard"], version = "^0.115.5"}
+jinja2 = "^3.1.4"
+pydantic-settings = "^2.6.1"
+pwdlib = {extras = ["argon2"], version = "^0.2.1"}
+pyjwt = "^2.10.0"
+pillow = {extras = ["jpeg"], version = "^11.0.0"}
+
+
+[tool.poetry.group.dev.dependencies]
+taskipy = "^1.14.0"
+
+[tool.taskipy.tasks]
+run = "fastapi dev schedula/app.py"
+
+db_create = "python -c 'from schedula.tasks import create_tables; create_tables()'"
+db_delete = "python -c 'from schedula.tasks import drop_tables; drop_tables()'"
+db_user_adm = "python -c 'from schedula.tasks import insert_user_adm_default; insert_user_adm_default()'"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block conteudo %}
+<section class="container my-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <!-- Card de perfil -->
+            <div class="card">
+                <div class="card-body text-center">
+                    <img 
+                        src="{% if usuario.imagem %}/static/bucket/usuario/{{ usuario.imagem }}.png {% else %}/static/img/profile_default.svg{% endif %}" 
+                        alt="Foto do usuário" 
+                        class="rounded-circle mb-3" 
+                        style="width: 150px; height: 150px; object-fit: cover;">
+                    <h3 class="card-title">{{ usuario.nome }}</h3>
+                    <p class="card-text">
+                        <strong>Tipo:</strong> {% if usuario.administrador == 0 %}<span style="color: green;">Usuário</span>{% else %}<span style="color: red">Administrador</span>{% endif %}
+                    </p>
+                    <p class="card-text ">
+                        <strong>Email:</strong> {{ usuario.email }}<br> 
+                        <strong>Telefone:</strong> {{ usuario.telefone }}
+                    </p>
+                    <button 
+                        class="btn btn-primary w-100 mt-3" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#editarPerfilModal">
+                        <i class="bi bi-pencil-fill"></i> Editar Perfil
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para editar perfil -->
+    <div class="modal fade" id="editarPerfilModal" tabindex="-1" aria-labelledby="editarPerfilModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <form method="POST" action="/usuario/perfil/alterar" enctype="multipart/form-data">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editarPerfilModalLabel">Editar Perfil</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3 text-center">
+                            <label for="imagem" class="form-label">Foto do Usuário</label>
+                            <input 
+                                type="file" 
+                                class="form-control" 
+                                id="imagem" 
+                                name="imagem" 
+                                accept="image/*">
+                        </div>
+                        <div class="mb-3">
+                            <label for="nome" class="form-label">Nome</label>
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                id="nome" 
+                                name="nome" 
+                                value="{{ usuario.nome }}" 
+                                required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input 
+                                type="email" 
+                                class="form-control" 
+                                id="email" 
+                                name="email" 
+                                value="{{ usuario.email }}" 
+                                required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="telefone" class="form-label">Telefone</label>
+                            <input 
+                                type="tel" 
+                                class="form-control" 
+                                id="telefone" 
+                                name="telefone" 
+                                value="{{ usuario.telefone }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="senha" class="form-label">Senha</label>
+                            <input 
+                                type="password" 
+                                class="form-control" 
+                                id="senha" 
+                                name="senha" 
+                                value="">
+                        </div>
+                        <div class="mb-3">
+                            <label for="conf_senha" class="form-label">Confirmar senha</label>
+                            <input 
+                                type="password" 
+                                class="form-control" 
+                                id="conf_senha" 
+                                name="conf_senha" 
+                                value="">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

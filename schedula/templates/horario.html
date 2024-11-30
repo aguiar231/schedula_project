@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block conteudo %}
+<section class="container my-4">
+    <h2>Informações da Sala "{{ sala.nome }}"</h2>
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">{{ sala.nome }}</h5>
+            <p class="card-text">
+                <strong>Tipo:</strong> {{ tipos_sala[sala.tipo_sala -1]["nome"] }}<br>
+                <strong>Status:</strong> 
+                {% if sala.status == "DISPONIVEL" %}
+                    <span class="badge bg-success">Disponível</span>
+                {% elif sala.status == "INDISPONIVEL" %}
+                    <span class="badge bg-warning text-dark">Indisponível</span>
+                {% else %}
+                    <span class="badge bg-danger">Indisponível</span>
+                {% endif %}
+            </p>
+        </div>
+    </div>
+    <h3>Escolha o Horário para Agendar</h3>
+    <form action="/sala/{{ sala.id }}/horario" method="get" >
+        <div class="mb-4">
+          <label for="week-picker" class="form-label">Escolha a Semana do Mês:</label>
+          <input type="text" id="datepicker" name="filter_data" class="form-control" placeholder="Selecione uma segunda-feira">
+        </div>
+        <button type="#" id="filter-button" class="btn btn-primary rounded-0" style="background-color: #b552d5; border-color: #b552d5;">Filtrar Horários</button>
+    </form>
+    <div class="text-center mb-3">
+        <h4>Horários disponíveis de <b>{{ dias_semana[0].data }}</b><span id="data-inicial"></span> até <b>{{ dias_semana[6].data }}</b><span id="data-final"></span></h4>
+    </div>
+    <!-- Tabela de horários -->
+    <form method="post" action="/sala/{{ sala.id }}/horario/agendar">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th class="text-center">Segunda</th>
+                        <th class="text-center">Terça</th>
+                        <th class="text-center">Quarta</th>
+                        <th class="text-center">Quinta</th>
+                        <th class="text-center">Sexta</th>
+                        <th class="text-center">Sábado</th>
+                        <th class="text-center">Domingo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <!-- Segunda-feira -->
+                        <td class="text-center">
+                            <div class="btn-group-vertical w-100" role="group" aria-label="Horários Segunda-feira">
+                                    {%if dias_semana[0]: %}
+                                    {% for horario in dias_semana[0].horarios %}
+                                        <input type="checkbox" class="btn-check " name="horarios" id="seg_{{ loop.index }}" value="{{ { 'time': horario.time, 'date': dias_semana[0].data } }}" autocomplete="off" {%if horario.ativo == 0 %} checked disabled {% endif %}>
+                                        <label class="btn {%if horario.ativo == 0 %} btn-outline-danger {%else%} btn-outline-primary {% endif %} "  for="seg_{{ loop.index }}">{{ horario.time }}</label>
+                                    {% endfor %}
+                                    {% endif %}
+                            </div>
+                        </td>
+                        <!-- Terça-Feira -->
+                        <td class="text-center">
+                            <div class="btn-group-vertical w-100" role="group" aria-label="Horários Terça-feira">
+                                {%if dias_semana[1]: %}
+                                {% for horario in dias_semana[1].horarios %}
+                                    <input type="checkbox" class="btn-check " name="horarios" id="ter_{{ loop.index }}" value="{{ { 'time': horario.time, 'date': dias_semana[1].data } }}" autocomplete="off" {%if horario.ativo == 0 %} checked disabled {% endif %}>
+                                    <label class="btn {%if horario.ativo == 0 %} btn-outline-danger {%else%} btn-outline-primary {% endif %} "  for="ter_{{ loop.index }}">{{ horario.time }}</label>
+                                {% endfor %}
+                                {% endif %}
+                            </div>
+                        </td>
+                        <!-- Quarta-Feira -->
+                        <td class="text-center">
+                            <div class="btn-group-vertical w-100" role="group" aria-label="Horários Quarta-feira">
+                                {%if dias_semana[2]: %}
+                                {% for horario in dias_semana[2].horarios %}
+                                    <input type="checkbox" class="btn-check " name="horarios" id="qua_{{ loop.index }}" value="{{ { 'time': horario.time, 'date': dias_semana[2].data } }}" autocomplete="off" {%if horario.ativo == 0 %} checked disabled {% endif %}>
+                                    <label class="btn {%if horario.ativo == 0 %} btn-outline-danger {%else%} btn-outline-primary {% endif %} "  for="qua_{{ loop.index }}">{{ horario.time }}</label>
+                                {% endfor %}
+                                {% endif %}
+                            </div>
+                        </td>
+                        <!-- Quinta-Feira -->
+                        <td class="text-center">
+                            <div class="btn-group-vertical w-100" role="group" aria-label="Horários Quinta-feira">
+                                {%if dias_semana[3]: %}
+                                {% for horario in dias_semana[3].horarios %}
+                                    <input type="checkbox" class="btn-check " name="horarios" id="qui_{{ loop.index }}" value="{{ { 'time': horario.time, 'date': dias_semana[3].data } }}" autocomplete="off" {%if horario.ativo == 0 %} checked disabled {% endif %}>
+                                    <label class="btn {%if horario.ativo == 0 %} btn-outline-danger {%else%} btn-outline-primary {% endif %} "  for="qui_{{ loop.index }}">{{ horario.time }}</label>
+                                {% endfor %}
+                                {% endif %}
+                            </div>
+                        </td>
+                        <!-- Sexta-Feira -->
+                        <td class="text-center">
+                            <div class="btn-group-vertical w-100" role="group" aria-label="Horários Sexta-feira">
+                                {%if dias_semana[4]: %}
+                                {% for horario in dias_semana[4].horarios %}
+                                    <input type="checkbox" class="btn-check " name="horarios" id="sex_{{ loop.index }}" value="{{ { 'time': horario.time, 'date': dias_semana[4].data } }}" autocomplete="off" {%if horario.ativo == 0 %} checked disabled {% endif %}>
+                                    <label class="btn {%if horario.ativo == 0 %} btn-outline-danger {%else%} btn-outline-primary {% endif %} "  for="sex_{{ loop.index }}">{{ horario.time }}</label>
+                                {% endfor %}
+                                {% endif %}
+                            </div>
+                        </td>
+                        <!-- Sabado-->
+                        <td class="text-center">
+                            <div class="btn-group-vertical w-100" role="group" aria-label="Horários Sábado">
+                                {%if dias_semana[5]: %}
+                                {% for horario in dias_semana[5].horarios %}
+                                    <input type="checkbox" class="btn-check " name="horarios" id="sab_{{ loop.index }}" value="{{ { 'time': horario.time, 'date': dias_semana[5].data } }}" autocomplete="off" {%if horario.ativo == 0 %} checked disabled {% endif %}>
+                                    <label class="btn {%if horario.ativo == 0 %} btn-outline-danger {%else%} btn-outline-primary {% endif %} "  for="sab_{{ loop.index }}">{{ horario.time }}</label>
+                                {% endfor %}
+                                {% endif %}
+                            </div>
+                        </td>
+                        <!-- Domingo -->
+                        <td class="text-center">
+                            <div class="btn-group-vertical w-100" role="group" aria-label="Horários Domingo">
+                                {%if dias_semana[6]: %}
+                                {% for horario in dias_semana[6].horarios %}
+                                    <input type="checkbox" class="btn-check " name="horarios" id="dom_{{ loop.index }}" value="{{ { 'time': horario.time, 'date': dias_semana[6].data } }}" autocomplete="off" {%if horario.ativo == 0 %} checked disabled {% endif %}>
+                                    <label class="btn {%if horario.ativo == 0 %} btn-outline-danger {%else%} btn-outline-primary {% endif %} "  for="dom_{{ loop.index }}">{{ horario.time }}</label>
+                                {% endfor %}
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- Botão para Confirmar Seleção -->
+        <div class="text-center my-4">
+            <button type="submit" class="btn btn-primary rounded-0 btn-lg" style="background-color: #b552d5; border-color: #b552d5;">Confirmar Horário</button>
+        </div>
+    </form> 
+</section>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        flatpickr("#datepicker", {
+            dateFormat: "d-m-Y", // Formato
+            locale: "pt",
+            enable: [
+                function (date) {
+                        //é segunda-feira
+                    return date.getDay() === 1;
+                }
+            ],
+            onChange: function(selectedDates, dateStr, instance) {
+                console.log("Data selecionada:", dateStr);
+            }
+        });
+    });
+</script>
+{% endblock %}

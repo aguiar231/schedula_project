@@ -1,0 +1,38 @@
+{% if not toast: %}
+{% set toast = request.cookies.get("toast") %}
+{% endif %}
+
+{% if toast %}
+{% set toast = toast|fromjson %}
+    {% if toast["tipo"] == "aviso" %} 
+    <div class="toast-container position-fixed top-0 end-0 p-3 my-5">
+        <div class="toast text-bg-secondary" role="alert" aria-live="assertive" aria-atomic="true" id="topRightToast">
+            <div class="toast-header">
+                <i class="bi bi-info-lg me-2"></i>
+                <strong class="me-auto">Schedula</strong>
+                <small class="text-muted">Agora mesmo</small>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Fechar"></button>
+            </div>
+            <div class="toast-body">
+                {{toast["mensagem"]|safe}}
+            </div>
+        </div>
+    </div>
+
+    {% elif toast["tipo"] == "bom" %}
+    <div class="toast-container position-fixed top-0 end-0 p-3 my-5">
+        <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="topRightToast">
+            <div class="toast-header">
+                <i class="bi bi-info-lg me-2"></i>
+                <strong class="me-auto">Schedula</strong>
+                <small class="text-muted">Agora mesmo</small>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Fechar"></button>
+            </div>
+            <div class="toast-body">
+                {{toast["mensagem"]|safe}} <img class="img-fluid" src="https://images.emojiterra.com/google/noto-emoji/animated-emoji/1f38a.gif" width="22px" alt="">    
+            </div>
+        </div>
+    </div>
+    {% endif %}
+{% endif %}
+

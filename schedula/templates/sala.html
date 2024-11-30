@@ -1,0 +1,363 @@
+{% extends "base.html" %}
+{% block conteudo %}
+
+<section class="container my-4">
+
+    {% if usuario.administrador == 1 %}
+    <div class="mb-4">
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#novaSalaModal">
+            <i class="bi bi-plus-circle-fill"></i> Nova Sala
+        </button>
+    </div>
+    {% endif %}
+    <!-- Filtro -->
+    <form class="row mb-4 g-3 align-items-end" method="GET" action="/sala">
+        <div class="col-md-4">
+            <label for="filter_nome" class="form-label">Nome da Sala</label>
+            <input type="text" class="form-control" id="filter_nome" name="filter_nome" placeholder="Digite o nome">
+        </div>
+        <div class="col-md-4">
+            <label for="filter_tipo_sala" class="form-label">Tipo de Sala</label>
+            <select class="form-select" id="filter_tipo_sala" name="filter_tipo_sala">
+                <option value="" {% if not request.query_params.get('filter_tipo_sala') %}selected{% endif %}>Selecione o tipo</option>
+                {% for tipo_sala in tipos_sala %}
+                <option value="{{ tipo_sala.id }}" {% if request.query_params.get('filter_tipo_sala') == tipo_sala.id|string %}selected{% endif %}>{{ tipo_sala.nome }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label for="filter_status" class="form-label">Status</label>
+            <select class="form-select" id="filter_status" name="filter_status">
+                <option value="" {% if not request.query_params.get('filter_status') %}selected{% endif %}>Selecione o status</option>
+                <option value="DISPONIVEL" {% if request.query_params.get('filter_status') == "DISPONIVEL" %}selected{% endif %}>Disponível</option>
+                <option value="INDISPONIVEL" {% if request.query_params.get('filter_status') == "INDISPONIVEL" %}selected{% endif %}>Indisponível</option>
+            </select>
+        </div>
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+        </div>
+    </form>
+
+    <!-- Listagem de Salas -->
+    <div class="row g-4">
+        {% for dado in dados %}
+        <div class="col-md-4">
+            <div class="card">
+                <img src="{% if dado.sala.imagem %}/static/bucket/sala/{{ dado.sala.imagem }}.png {% else %}/static/img/sala_default.png{% endif %}" height="230px" class="card-img-top" alt="Imagem da Sala">
+                <div class="card-body">
+                    <h5 class="card-title">{{ dado.sala.nome }}</h5>
+                    <p class="card-text">
+                        <strong>Tipo:</strong> {{ tipos_sala[dado.sala.tipo_sala - 1]["nome"] }}<br>
+                        <strong>Status:</strong> 
+                        {% if dado.sala.status == "DISPONIVEL" %}
+                            <span class="badge bg-success">Disponível</span>
+                        {% elif dado.sala.status == "INDISPONIVEL" %}
+                            <span class="badge bg-danger">Indisponível</span>
+                        {% else %}
+                            <span class="badge bg-danger">Outro</span>
+                        {% endif %}
+                    </p>
+                    
+                    <div class="d-flex flex-column gap-2">
+                        {% if dado.sala.status == "INDISPONIVEL" %}  
+                        <button disabled  type="button" class="btn btn-outline-secondary w-100" ><i class="bi bi-lock-fill"></i> Ver Detalhes</button>
+                        {% else %}
+                        <a href="/sala/{{ dado.sala.id }}/horario" class="btn btn-outline-primary btn-off w-100">
+                            <i class="bi bi-calendar2-check-fill"></i> Ver Detalhes
+                        </a>
+                        {% endif %}
+                        {% if usuario.administrador == 1 %}
+                        <button class="btn btn-outline-warning w-100" data-bs-toggle="modal" data-bs-target="#editarModal{{ dado.sala.id }}">
+                            <i class="bi bi-pencil-fill"></i> Editar
+                        </button>
+                        <button class="btn btn-outline-danger w-100" data-bs-toggle="modal" data-bs-target="#excluirModal{{ dado.sala.id }}">
+                            <i class="bi bi-trash-fill"></i> Excluir
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <!-- Modal Editar -->
+    <div class="modal fade" id="editarModal{{ dado.sala.id }}" tabindex="-1" aria-labelledby="editarModalLabel{{ dado.sala.id }}" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <form method="POST" action="/sala/{{ dado.sala.id }}/editar" enctype="multipart/form-data">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editarModalLabel{{ dado.sala.id }}">Editar Sala</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <!-- Coluna 1: Informações da sala -->
+                            <div class="col-md-6">
+                                <h6>Informações da Sala</h6>
+                                <div class="mb-3">
+                                    <label for="imagem" class="form-label">Foto da Sala</label>
+                                    <input 
+                                        type="file" 
+                                        class="form-control" 
+                                        id="imagem" 
+                                        name="imagem" 
+                                        accept="image/*">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="nome" class="form-label">Nome</label>
+                                    <input type="text" class="form-control" id="nome" name="nome" value="{{ dado.sala.nome }}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="capacidade" class="form-label">Capacidade</label>
+                                    <input type="number" class="form-control" id="capacidade" name="capacidade" value="{{ dado.sala.capacidade }}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="bloco" class="form-label">Bloco</label>
+                                    <input type="text" class="form-control" id="bloco" name="bloco" value="{{ dado.sala.bloco }}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="andar" class="form-label">Andar</label>
+                                    <input type="text" class="form-control" id="andar" name="andar" value="{{ dado.sala.andar }}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="numero_sala" class="form-label">Número da Sala</label>
+                                    <input type="text" class="form-control" id="numero_sala" name="numero_sala" value="{{ dado.sala.numero_sala }}">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Intervalo de Tempo</label><br>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="intervalo_tempo" id="intervalo30" value="30"{% if dado.sala.intervalo_tempo == 30 %}checked{% endif %}>
+                                        <label class="form-check-label" for="intervalo30">30 Minutos</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="intervalo_tempo" id="intervalo60" value="60"{% if dado.sala.intervalo_tempo == 60 %}checked{% endif %}>
+                                        <label class="form-check-label" for="intervalo60">1 Hora</label>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="tipoSala{{ dado.sala.id }}" class="form-label">Tipo de Sala</label>
+                                    <select class="form-select" id="tipoSala{{ dado.sala.id }}" name="tipo_sala">
+                                        {% for tipo_sala in tipos_sala %}
+                                        <option value="{{ tipo_sala.id }}" {% if tipo_sala.id == dado.sala.tipo_sala %}selected{% endif %}>
+                                            {{ tipo_sala.nome }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="statusSala{{ dado.sala.id }}" class="form-label">Status</label>
+                                    <select class="form-select" id="statusSala{{ dado.sala.id }}" name="status">
+                                        <option value="DISPONIVEL" {% if dado.sala.status == "DISPONIVEL" %}selected{% endif %}>Disponível</option>
+                                        <option value="INDISPONIVEL" {% if dado.sala.status == "INDISPONIVEL" %}selected{% endif %}>Indisponível</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="observacoesSala{{ dado.sala.id }}" class="form-label">Observações</label>
+                                    <textarea class="form-control" id="observacoesSala{{ dado.sala.id }}" name="observacoes">{{ dado.sala.observacoes }}</textarea>
+                                </div>
+                                
+                            </div>
+        
+                            <!-- Coluna 2: Disponibilidade semanal -->
+                            <div class="col-md-6">
+                                <h6>Disponibilidade Semanal</h6>
+                                {% for disponibilidade in dado.disponibilidades %}
+                                <div class="mb-3">
+                                    <div class="row align-items-center mb-3">
+                                        <!-- Nome do dia da semana -->
+                                        <div class="col-md-6 d-flex justify-content-between align-items-center">
+                                            <span>{{ disponibilidade.dia_da_semana }}</span>
+                                            <!-- Switch de Ativo -->
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" 
+                                                       type="checkbox" 
+                                                       id="{% if disponibilidade.dia_da_semana == 'TERÇA' %}terca_ativo{% elif disponibilidade.dia_da_semana == 'SÁBADO' %}sabado_ativo{% else %}{{ disponibilidade.dia_da_semana.lower()}}_ativo {% endif %}" 
+                                                       name="{% if disponibilidade.dia_da_semana == 'TERÇA' %}terca_ativo{% elif disponibilidade.dia_da_semana == 'SÁBADO' %}sabado_ativo{% else %}{{ disponibilidade.dia_da_semana.lower()}}_ativo{% endif %}"
+                                                       {% if disponibilidade.ativo %}checked{% endif %}>
+                                            </div>
+                                        </div>
+                                        <!-- Campos de horário -->
+                                        <div class="col-md-6 d-flex align-items-center">
+                                            <!-- Horário início -->
+                                            <input type="text" 
+                                                   class="form-control me-2 horario-input"
+                                                   id="{% if disponibilidade.dia_da_semana == 'TERÇA' %}terca_inicio{% elif disponibilidade.dia_da_semana == 'SÁBADO' %}sabado_inicio{% else %}{{ disponibilidade.dia_da_semana.lower()}}_inicio {% endif %}"
+                                                   name="{% if disponibilidade.dia_da_semana == 'TERÇA' %}terca_inicio{% elif disponibilidade.dia_da_semana == 'SÁBADO' %}sabado_inicio{% else %}{{ disponibilidade.dia_da_semana.lower()}}_inicio{% endif %}"
+                                                   placeholder="Início" 
+                                                   value="{{ disponibilidade.horario_inicio[0:5] }}"
+                                                   maxlength="5"
+                                                   pattern="\d{2}:\d{2}">
+                                            <span class="mx-2">até</span>
+                                            <!-- Horário fim -->
+                                            <input type="text" 
+                                                   class="form-control ms-2 horario-input" 
+                                                   id="{% if disponibilidade.dia_da_semana == 'TERÇA' %}terca_fim{% elif disponibilidade.dia_da_semana == 'SÁBADO' %}sabado_fim{% else %}{{ disponibilidade.dia_da_semana.lower()}}_fim {% endif %}"
+                                                   name="{% if disponibilidade.dia_da_semana == 'TERÇA' %}terca_fim{% elif disponibilidade.dia_da_semana == 'SÁBADO' %}sabado_fim{% else %}{{ disponibilidade.dia_da_semana.lower()}}_fim {% endif %}" 
+                                                   placeholder="Fim" 
+                                                   value="{{ disponibilidade.horario_fim[0:5] }}"
+                                                   maxlength="5"
+                                                   pattern="\d{2}:\d{2}">
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                                
+                               
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- Modal Excluir-->
+    <div class="modal fade" id="excluirModal{{ dado.sala.id }}" tabindex="-1" aria-labelledby="excluirModalLabel{{ dado.sala.id }}" aria-hidden="true">
+        <div class="modal-dialog">
+            <form method="POST" action="/sala/{{ dado.sala.id }}/excluir">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="excluirModalLabel{{ dado.sala.id }}">Excluir Sala</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Tem certeza que deseja excluir a sala <strong>{{ dado.sala.nome }}</strong>?
+                        Essa ação não pode ser desfeita.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-danger">Excluir</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+        {% endfor %}
+    </div>
+
+    <!-- Paginação -->
+    <nav class="my-4" aria-label="Paginação">
+        <ul class="pagination justify-content-center">
+            {% for i in range(1, total_paginas + 1) %}
+            <li class="page-item {% if i == pagina_atual %}active{% endif %}">
+                <a class="page-link" href="?pagina={{ i }}{% if request.query_params.get('filter_tipo_sala') %}&filter_tipo_sala={{ request.query_params.get('filter_tipo_sala') }}{% endif %}{% if request.query_params.get('filter_status') %}&filter_status={{ request.query_params.get('filter_status') }}{% endif %}">
+                    {{ i }}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </nav>
+</section>
+
+<!-- Modal Criar Nova Sala -->
+<div class="modal fade" id="novaSalaModal" tabindex="-1" aria-labelledby="novaSalaModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form method="POST" action="/sala/criar" enctype="multipart/form-data">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="novaSalaModalLabel">Criar Nova Sala</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Nome -->
+                    <div class="mb-3">
+                        <label for="nome" class="form-label">Nome da Sala</label>
+                        <input type="text" class="form-control" id="nome" name="nome" required>
+                    </div>
+                    
+                    <!-- Capacidade -->
+                    <div class="mb-3">
+                        <label for="capacidade" class="form-label">Capacidade</label>
+                        <input type="number" class="form-control" id="capacidade" name="capacidade" required>
+                    </div>
+                    
+                    <!-- Bloco -->
+                    <div class="mb-3">
+                        <label for="bloco" class="form-label">Bloco</label>
+                        <input type="text" class="form-control" id="bloco" name="bloco" required>
+                    </div>
+                    
+                    <!-- Andar -->
+                    <div class="mb-3">
+                        <label for="andar" class="form-label">Andar</label>
+                        <input type="number" class="form-control" id="andar" name="andar" required>
+                    </div>
+                    
+                    <!-- Número da Sala -->
+                    <div class="mb-3">
+                        <label for="numero_sala" class="form-label">Número da Sala</label>
+                        <input type="text" class="form-control" id="numero_sala" name="numero_sala" required>
+                    </div>
+                    
+                    <!-- Tipo de Sala -->
+                    <div class="mb-3">
+                        <label for="tipo_sala" class="form-label">Tipo de Sala</label>
+                        <select class="form-select" id="tipo_sala" name="tipo_sala" required>
+                            <option value="">Selecione o Tipo</option>
+                            {% for tipo_sala in tipos_sala %}
+                            <option value="{{ tipo_sala.id }}">{{ tipo_sala.nome }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <!-- Intervalo de Tempo -->
+                    <div class="mb-3">
+                        <label class="form-label">Intervalo de Tempo</label><br>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="intervalo_tempo" id="intervalo30" value="30">
+                            <label class="form-check-label" for="intervalo30">30 Minutos</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="intervalo_tempo" id="intervalo60" value="60" checked>
+                            <label class="form-check-label" for="intervalo60">1 Hora</label>
+                        </div>
+                    </div>
+                    
+                    <!-- Observações -->
+                    <div class="mb-3">
+                        <label for="observacoes" class="form-label">Observações</label>
+                        <textarea class="form-control" id="observacoes" name="observacoes" rows="3"></textarea>
+                    </div>
+                    
+                    <!-- Imagem -->
+                    <div class="mb-3">
+                        <label for="imagemSala" class="form-label">Imagem</label>
+                        <input class="form-control" type="file" id="imagemSala" name="imagem" accept="image/*">
+                    </div>
+                    
+                    <!-- Status -->
+                    <div class="mb-3">
+                        <label for="statusSala" class="form-label">Status</label>
+                        <select class="form-select" id="statusSala" name="status" required>
+                            <option value="DISPONIVEL">Disponível</option>
+                            <option value="INDISPONIVEL">Indisponível</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar Sala</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+<script>
+    //codigo pra limitar 
+document.querySelectorAll('.horario-input').forEach(input => {
+    input.addEventListener('input', (e) => {
+        let value = e.target.value.replace(/[^0-9]/g, ''); // Remove caracteres não numéricos
+        if (value.length >= 3) {
+            value = value.slice(0, 2) + ':' + value.slice(2, 4); // Insere os dois pontos
+        }
+        e.target.value = value.slice(0, 5); // Limita a 5 caracteres
+    });
+});</script>
+
+{% endblock %}

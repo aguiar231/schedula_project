@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block conteudo %}
+<section class="container py-5">
+    <div class="row align-items-center">
+        <!-- Imagem à Esquerda -->
+        <div class="col-lg-6 mb-4 mb-lg-0">
+            <img src="/static/img/sobre.svg" alt="Imagem de Sobre" class="img-fluid">
+        </div>
+        
+        <!-- Texto Explicativo à Direita -->
+        <div class="col-lg-6">
+            <h2 class="display-4 mb-4">Sobre o <b style="color: #b552d5;">Schedula</b></h2>
+            
+            <!-- Problema -->
+            <h3 class="mb-3">O Problema</h3>
+            <p class="lead mb-4">
+                Em muitas instituições de ensino, o processo de agendamento de salas de aula é feito manualmente, o que pode gerar conflitos de horários, falta de organização e um grande desperdício de tempo.
+                Professores e alunos muitas vezes enfrentam dificuldades para encontrar salas disponíveis ou acabam com agendamentos conflitantes.
+            </p>
+
+            <!-- Solução -->
+            <h3 class="mb-3">A Solução</h3>
+            <p class="lead mb-4">
+                Nosso software de agendamento de salas de aula foi desenvolvido para solucionar esses problemas. Ele permite que os usuários agendem salas de forma simples e eficiente, com uma interface intuitiva e sem o risco de sobreposições de horários.
+                Além disso, é possível visualizar a disponibilidade das salas em tempo real, garantindo que todos tenham acesso à melhor organização possível.
+            </p>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

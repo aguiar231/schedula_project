@@ -1,0 +1,80 @@
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <!-- Brand -->
+        <a class="navbar-brand" href="/">Schedula</a>
+        <!-- Toggler/collapsible Button -->
+        <button 
+            class="navbar-toggler" 
+            type="button" 
+            data-bs-toggle="collapse" 
+            data-bs-target="#navbarNav" 
+            aria-controls="navbarNav" 
+            aria-expanded="false" 
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <!-- Navbar Links -->
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav align-items-center">
+                {% if not usuario %}
+                <li class="nav-item me-2">
+                    <a class="nav-link active" aria-current="page" href="/">Home</a>
+                </li>
+                <li class="nav-item me-2">
+                    <a class="nav-link" href="/contato">Contato</a>
+                </li>
+                <li class="nav-item me-2">
+                    <a class="nav-link" href="/sobre">Sobre</a>
+                </li>
+                {% else %}
+                <li class="nav-item me-2">
+                    <a class="nav-link active" aria-current="page" href="/sala">Salas Disponiveis</a>
+                </li>
+                <li class="nav-item me-2">
+                    <a class="nav-link" href="/sala/reserva">Meus Agendamentos</a>
+                </li>
+                {% endif %}
+                {% if not usuario %}
+                <li class="nav-item">
+                    <!-- Botão Lilás -->
+                    <a 
+                        class="btn btn-primary d-inline-block rounded-0 px-3" 
+                        style="background-color: #b552d5; border-color: #b552d5;" 
+                        href="/login">
+                        Login
+                    </a>
+                </li>
+                {% else %}
+                <li class="nav-item dropdown">
+                    <a 
+                        class="nav-link dropdown-toggle d-flex align-items-center" 
+                        href="#" 
+                        id="userDropdown" 
+                        role="button" 
+                        data-bs-toggle="dropdown" 
+                        aria-expanded="false">
+                        <img 
+                            src="{% if usuario.imagem %}/static/bucket/usuario/{{ usuario.imagem }}.png {% else %}/static/img/profile_default.svg{% endif %}" 
+                            alt="User Avatar" 
+                            class="rounded-circle me-2" 
+                            style="width: 40px; height: 40px;">
+                        <span>{{usuario.nome}}</span> <!-- Nome do usuário -->
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                        <li><a class="dropdown-item" href="/usuario/perfil">Perfil</a></li>
+                        <li><a class="dropdown-item" href="/configuracoes">Configurações</a></li>
+                        {% if usuario.administrador == 1%}
+                        <li><a class="dropdown-item" href="/adm/">Painel Administrativo</a></li>
+                        {% endif %}
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item text-danger" href="/logout">Sair <i class="bi bi-box-arrow-right"></i></a></li>
+                    </ul>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
